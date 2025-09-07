@@ -2,65 +2,75 @@ import logo from "../../assets/logo.svg";
 import { RiEyeFill, RiEyeOffFill } from "react-icons/ri";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import toast, { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from "react-hot-toast";
+import { useContext } from "react";
+import { Auth } from "../context/AuthContext";
+
 const Signup = () => {
-
-
+  const { serverUrl ,setIsloggedin} = useContext(Auth);
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [Firstname, setFirstname] = useState("");
   const [Lastname, setLastname] = useState("");
   const [Username, setUsername] = useState("");
   const [Email, setEmail] = useState("");
-  const navigate=useNavigate();
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  
-  const handlesubmit = async() => {
-    const res = await fetch("http://localhost:3000/api/auth/signup", {
+  const handlesubmit = async () => {
+    setLoading(true);
+    if (!Firstname || !Lastname || !Username || !Email || !password) {
+      toast.error("Please fill all the fields");
+      setLoading(false);
+      return;
+    }
+    const res = await fetch(serverUrl + "/api/auth/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify({
-  firstname: Firstname,
-  lastname: Lastname,
-  username: Username,
-  email: Email,
-  password
-}),
+        firstname: Firstname,
+        lastname: Lastname,
+        username: Username,
+        email: Email,
+        password,
+      }),
     });
     const data = await res.json();
     console.log(data.data);
-    if(res.ok){
+    if (res.ok) {
       toast.success("User registered successfully");
       setFirstname("");
       setLastname("");
       setUsername("");
       setEmail("");
       setPassword("");
+      setLoading(false);
+      setIsloggedin(true);
       navigate("/");
     } else {
+      setLoading(false);
       toast.error(data.message || "Registration failed");
     }
-  }
-
-
-
+  };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-
-
 
   return (
     <div className="w-full h-screen bg-white flex flex-col pb-10 items-center justify-start gap-[10px]">
       <div className="p-[30px] lg:p-[35px] w-full flex items-center ">
         <img src={logo} alt="Logo" className="w-32" />
       </div>
-      <form 
-      onSubmit={(e) => {e.preventDefault();}}
-      className="w-[90%] max-w-[400px] h-[600px] md:shadow-xl rounded-xl p-8 flex flex-col items-center justify-center gap-4">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
+        className="w-[90%] max-w-[400px] h-[600px] md:shadow-xl rounded-xl p-8 flex flex-col items-center justify-center gap-4"
+      >
         <h2 className="text-3xl font-semibold mb-4 text-gray-800">Sign Up</h2>
         <input
           type="text"
@@ -107,15 +117,19 @@ const Signup = () => {
           </button>
         </div>
         <button
-        onClick={handlesubmit}
+        disabled={loading}
+          onClick={handlesubmit}
           type="submit"
           className="w-full mt-4 p-3 bg-[#0a66c2] text-white rounded-full font-semibold hover:bg-blue-700 transition-colors duration-200 cursor-pointer"
         >
-          Sign Up
+          {loading ? "Loading ..." : "Sign Up"}
         </button>
         <p className="mt-4 text-gray-600">
           Already have an account?{" "}
-          <Link to="/signin" className="text-blue-600 font-semibold hover:underline">
+          <Link
+            to="/signin"
+            className="text-blue-600 font-semibold hover:underline"
+          >
             Sign In
           </Link>
         </p>
