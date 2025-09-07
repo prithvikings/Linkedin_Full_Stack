@@ -1,9 +1,35 @@
-import React from 'react'
+import React from "react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Home from "./pages/Home";
+import Signup from "./pages/Signup";
+import Signin from "./pages/Signin";
+import { Toaster } from "react-hot-toast";
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Home />,
+  },
+  {
+    path: "/signup",
+    element: <Signup />,
+  },
+  {
+    path: "/signin",
+    element: <Signin />,
+  },
+  {
+    path: "*",
+    element: <div className="w-full h-screen flex items-center justify-center text-3xl font-bold">404 Not Found</div>,
+  }
+]);
 
 const App = () => {
   return (
-    <div>App</div>
-  )
-}
+    <>
+      <RouterProvider router={router} />
+      <Toaster position="top-right" />
+    </>
+  );
+};
 
-export default App
+export default App;

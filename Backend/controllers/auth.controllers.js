@@ -2,6 +2,10 @@ import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import { validateSignUpData } from "./validate.js";
 import jwt from "jsonwebtoken";
+
+
+
+//Signup controller
 export const signup = async (req, res) => {
   try {
     const { firstname, lastname, username, email, password } = req.body;
@@ -9,6 +13,9 @@ export const signup = async (req, res) => {
     validateSignUpData(req);
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(400).send("Email already exists");
+
+    const existingUsername = await User.findOne({ username });
+    if (existingUsername) return res.status(400).send("Username already exists");
 
     const passwordHash = await bcrypt.hash(password, 10);
 
@@ -42,6 +49,8 @@ export const signup = async (req, res) => {
   }
 };
 
+
+// Signin controller
 export const signin = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -63,7 +72,7 @@ export const signin = async (req, res) => {
     res.cookie("token", token, {
       expires: new Date(Date.now() + 8 * 3600000),
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "None",
     });
 
@@ -76,12 +85,14 @@ export const signin = async (req, res) => {
   }
 };
 
+
+// Signout controller
 export const signout = async (req, res) => {
   try {
     res.cookie("token", null, {
       expires: new Date(Date.now()),
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "None",
     });
 
