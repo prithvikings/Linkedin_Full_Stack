@@ -5,7 +5,6 @@ import { UserDataCtx } from "../context/UserContext";
 const ProtectedRoute = ({ children }) => {
   const { UserData, loading } = useContext(UserDataCtx);
 
-  // Wait until we finish checking the backend
   if (loading) {
     return <div>Loading...</div>;
   }

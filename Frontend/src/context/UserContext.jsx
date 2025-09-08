@@ -19,7 +19,6 @@ const UserContext = ({ children }) => {
           credentials: "include", // ✅ send cookie
         });
         const data = await res.json();
-
         if (res.ok) {
           setUserData(data.user); // ✅ set user from backend
         } else {

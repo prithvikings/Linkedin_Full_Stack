@@ -42,7 +42,6 @@ const Signup = () => {
       }),
     });
     const data = await res.json();
-    console.log(data.user);
     if (res.ok) {
       toast.success("User registered successfully");
       setFirstname("");
