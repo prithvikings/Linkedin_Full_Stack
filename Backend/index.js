@@ -18,11 +18,11 @@ app.use(cors({
 
 // Import routes
 import authrouter from './routes/auth.routes.js';
+import userouter from './routes/user.router.js';
 
 // Use routes
 app.use('/api/auth', authrouter);
-
-
+app.use('/api/user', userouter);
 
 // Connect to database and start server
 connectDB().then(() => {

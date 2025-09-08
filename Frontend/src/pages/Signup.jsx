@@ -5,9 +5,10 @@ import { Link, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import { useContext } from "react";
 import { Auth } from "../context/AuthContext";
+import { UserDataCtx } from "../context/UserContext";
 
 const Signup = () => {
-  const { serverUrl ,setIsloggedin} = useContext(Auth);
+  const { serverUrl} = useContext(Auth);
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [Firstname, setFirstname] = useState("");
@@ -15,7 +16,9 @@ const Signup = () => {
   const [Username, setUsername] = useState("");
   const [Email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { UserData, setUserData } = useContext(UserDataCtx);
 
   const handlesubmit = async () => {
     setLoading(true);
@@ -39,7 +42,7 @@ const Signup = () => {
       }),
     });
     const data = await res.json();
-    console.log(data.data);
+    console.log(data.user);
     if (res.ok) {
       toast.success("User registered successfully");
       setFirstname("");
@@ -48,10 +51,13 @@ const Signup = () => {
       setEmail("");
       setPassword("");
       setLoading(false);
-      setIsloggedin(true);
+      setUserData(data.user);  // ✅ set user data
       navigate("/");
+
     } else {
       setLoading(false);
+  setError(data.message || "Login failed");   // ✅ save message
+
       toast.error(data.message || "Registration failed");
     }
   };
@@ -72,6 +78,14 @@ const Signup = () => {
         className="w-[90%] max-w-[400px] h-[600px] md:shadow-xl rounded-xl p-8 flex flex-col items-center justify-center gap-4"
       >
         <h2 className="text-3xl font-semibold mb-4 text-gray-800">Sign Up</h2>
+
+        {/* ✅ Error box */}
+  {error && (
+    <div className="w-full bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded">
+      {error}
+    </div>
+  )}
+
         <input
           type="text"
           placeholder="Firstname"

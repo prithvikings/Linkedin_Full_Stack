@@ -1,13 +1,15 @@
-import React from "react";
+
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./pages/Home";
 import Signup from "./pages/Signup";
 import Signin from "./pages/Signin";
 import { Toaster } from "react-hot-toast";
+import ProtectedRoute from "./utils/ProtectedRoute";
+
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: <ProtectedRoute><Home /></ProtectedRoute>,
   },
   {
     path: "/signup",

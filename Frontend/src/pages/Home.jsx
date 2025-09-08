@@ -1,15 +1,14 @@
 import React, { useContext } from "react";
-import { Auth } from "../context/AuthContext";
+import { UserDataCtx } from "../context/UserContext";
 import { Navigate } from "react-router-dom";
 
 const Home = () => {
-  const { isloggedin, loading } = useContext(Auth);
+  const { UserData, loading } = useContext(UserDataCtx);
 
-  if (loading) return <div>Loading...</div>; // wait for auth check
+  if (loading) return <div>Loading...</div>; // wait for fetch
+  if (!UserData) return <Navigate to="/signin" />; // redirect if not logged in
 
-  if (!isloggedin) return <Navigate to="/signin" />; // redirect if not logged in
-
-  return <div>Welcome Back!</div>;
+  return <div>Welcome Back, {UserData.firstname}!</div>;
 };
 
 export default Home;

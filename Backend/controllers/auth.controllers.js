@@ -31,8 +31,18 @@ export const signup = async (req, res) => {
       sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
       maxAge: 8 * 3600000,
     });
-
-    return res.status(201).json({ success: true, message: "User added successfully", data: savedUser });
+    return res.status(201).json({
+  success: true,
+  message: "User added successfully",
+  user: {
+    _id: savedUser._id,
+    firstname: savedUser.firstname,
+    lastname: savedUser.lastname,
+    username: savedUser.username,
+    email: savedUser.email,
+    createdAt: savedUser.createdAt,
+  },
+});
   } catch (err) {
     console.error(err.message);
     return res.status(500).json({ success: false, message: "Server error, please try again later" });
@@ -69,10 +79,17 @@ export const signin = async (req, res) => {
     });
 
     return res.status(200).json({
-      success: true,
-      message: `${user.firstname} welcome back!`,
-      data: user,
-    });
+  success: true,
+  message: `${user.firstname} welcome back!`,
+  user: {
+    _id: user._id,
+    firstname: user.firstname,
+    lastname: user.lastname,
+    username: user.username,
+    email: user.email,
+    createdAt: user.createdAt,
+  },
+});
   } catch (err) {
     console.error(err.message);
     return res.status(500).json({ success: false, message: "Server error, please try again later" });
@@ -98,37 +115,3 @@ export const signout = async (req, res) => {
 };
 
 
-
-export const verifyUser = async (req, res) => {
-  try {
-    const token = req.cookies.token;
-    if (!token) {
-      return res.status(401).json({ success: false, message: "Not authenticated" });
-    }
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id).select("-password");
-
-    if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: "User verified",
-      user,
-    });
-  } catch (err) {
-    console.error(err.message);
-
-    // JWT expired/invalid → respond accordingly
-    if (err.name === "TokenExpiredError") {
-      return res.status(401).json({ success: false, message: "Session expired, please log in again" });
-    }
-    if (err.name === "JsonWebTokenError") {
-      return res.status(401).json({ success: false, message: "Invalid token" });
-    }
-
-    return res.status(500).json({ success: false, message: "Server error, please try again later" });
-  }
-};
