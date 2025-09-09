@@ -49,7 +49,6 @@ const userSchema =new mongoose.Schema({
     },
     skills:[{
         type:String,
-
     }],
     connections:[
         {
@@ -57,6 +56,27 @@ const userSchema =new mongoose.Schema({
             ref:"User"
         }
     ],
+    education:[{
+        college:{
+            type:String,
+        },
+        degree:{
+            type:String,
+        },
+        fieldofstudy:{
+            type:String,
+        },
+        startyear:{
+            type:Number,
+        },  
+        endyear:{
+            type:Number,
+        },
+    }],
+    bio:{
+        type:String,
+        default:"",
+    },
     experiences:[
         {
             title:{
