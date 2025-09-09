@@ -41,7 +41,7 @@ const userSchema =new mongoose.Schema({
     },
     location:{
         type:String,
-        default:"",
+        default:"India",
     },
     headline:{
         type:String,

@@ -5,6 +5,9 @@
   import { Toaster } from "react-hot-toast";
   import ProtectedRoute from "./utils/ProtectedRoute";
   import PublicRoute from "./utils/PublicRoute";   // 👈 import it
+  import Profile from "./pages/Profile";
+
+  // Define routes using createBrowserRouter
 
   const router = createBrowserRouter([
     {
@@ -18,6 +21,10 @@
     {
       path: "/signin",
       element: <PublicRoute><Signin /></PublicRoute>,  // 👈 wrapped
+    },
+    {
+      path:"/profile/:id",
+      element:<ProtectedRoute><Profile /></ProtectedRoute>
     },
     {
       path: "*",
