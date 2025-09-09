@@ -6,7 +6,7 @@ const ProtectedRoute = ({ children }) => {
   const { UserData, loading } = useContext(UserDataCtx);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="w-full flex items-center justify-center text-2xl font-bold">Loading...</div>;
   }
 
   if (!UserData) {

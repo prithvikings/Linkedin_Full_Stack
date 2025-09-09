@@ -5,7 +5,7 @@ import { UserDataCtx } from "../context/UserContext";
 const PublicRoute = ({ children }) => {
   const { UserData, loading } = useContext(UserDataCtx);
 
-  if (loading) return <div>Loading...</div>; // wait for auth check
+  if (loading) return <div className="w-full flex items-center justify-center text-2xl font-bold">Loading...</div>; // wait for auth check
 
   if (UserData) {
     // already logged in → go to Home

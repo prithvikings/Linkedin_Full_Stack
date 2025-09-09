@@ -100,18 +100,27 @@ export const signin = async (req, res) => {
 // Signout controller
 export const signout = async (req, res) => {
   try {
+    // To clear a cookie, all attributes (name, path, domain) must match the original cookie.
+    // The most common issue is the 'path' attribute. Setting it to '/'
+    // ensures it matches the path of the original cookie, which is often set at the root.
     res.cookie("token", null, {
       expires: new Date(Date.now()),
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "None",
+      // sameSite: "None" requires a secure context (HTTPS).
+      // For local development on HTTP, "Lax" or leaving it undefined works best.
+      // If the original cookie used "None", you must use a secure connection.
+      sameSite: "Lax",
+      path: "/", // ✅ Add this to ensure the cookie is cleared
     });
 
-    res.send("Logout Successful!!");
+    // We can also send a success message to the frontend.
+    res.status(200).json({ success: true, message: "Logout Successful!!" });
   } catch (err) {
     console.error(err.message); // log on backend
     res.status(400).json({ success: false, message: err.message }); // ✅ send to frontend
   }
 };
+
 
 
