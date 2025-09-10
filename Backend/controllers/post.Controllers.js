@@ -31,7 +31,8 @@ export const createPost = async (req, res) => {
 }
 export const getFeedPosts = async (req, res) => {
   try{
-    res.send("Get Feed Posts");
+    const posts = await Post.find().populate("author").sort({createdAt: -1});
+    res.status(200).json(posts);
   }catch(err){
     res.status(500).json({error: err.message});
   }
