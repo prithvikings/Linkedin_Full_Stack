@@ -8,6 +8,7 @@ const UserContext = ({ children }) => {
   const [loading, setLoading] = useState(true); // ✅ add loading
   const [editProfileOpen, setEditProfileOpen] = useState(false);
   const { serverUrl } = useContext(Auth);
+  const [createPostmodal, setcreatePostmodal] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -37,7 +38,7 @@ const UserContext = ({ children }) => {
   }, [serverUrl]);
 
   return (
-    <UserDataCtx.Provider value={{ UserData, setUserData, loading , editProfileOpen, setEditProfileOpen }}>
+    <UserDataCtx.Provider value={{ UserData, setUserData, loading , editProfileOpen, setEditProfileOpen, createPostmodal, setcreatePostmodal}}>
       {children}
     </UserDataCtx.Provider>
   );

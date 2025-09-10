@@ -3,13 +3,13 @@ import { UserDataCtx } from "../context/UserContext";
 import { Navigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Editprofile from "../components/Editprofile";
-import User from "../../../Backend/models/userModel";
+import Createpost from "../components/Createpost";
+
 const Home = () => {
-  const { UserData, loading,editProfileOpen,setEditProfileOpen } = useContext(UserDataCtx);
+  const { UserData, loading,editProfileOpen,setEditProfileOpen,setcreatePostmodal,createPostmodal} = useContext(UserDataCtx);
 
   if (loading) return <div>Loading...</div>; // wait until fetch finishes
   if (!UserData) return <Navigate to="/signin" />; // redirect if not logged in
-  console.log(UserData);
 
   const handleeditProfileOpen=()=>{
     setEditProfileOpen(!editProfileOpen);
@@ -18,6 +18,7 @@ const Home = () => {
   // ✅ don't use .user, it's already the user object
   return (
     <div className="w-full min-h-screen bg-[#f5f3f0] ">
+      {createPostmodal && <Createpost />}
       {editProfileOpen&&<Editprofile />}
       <Navbar />
       <div className="flex items-start mt-4 justify-evenly h-[90vh] space-x-2">
@@ -72,6 +73,7 @@ const Home = () => {
           </div>
           <div className="w-[80%]">
             <input
+            onClick={()=>setcreatePostmodal(true)}
               type="text"
               placeholder="Start a post"
               className="border w-full border-gray-300 rounded-full px-6 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
