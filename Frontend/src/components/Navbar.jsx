@@ -49,6 +49,7 @@ const Navbar = () => {
     }
   }
 
+
   return (
     <div className="w-full bg-white shadow-md px-4 md:px-10 lg:px-32 py-4 flex justify-between items-center relative">
       {/* Left section */}
@@ -99,7 +100,7 @@ const Navbar = () => {
           <div className="absolute top-16 right-6 w-72 bg-white rounded-lg shadow-lg border border-gray-200 z-50 animate-fadeIn">
             <div className="flex flex-col items-center p-4 border-b border-gray-200">
               <img
-                src="https://randomuser.me/api/portraits/men/32.jpg"
+                src={UserData.picture}
                 alt="profile"
                 className="w-20 h-20 rounded-full mb-3"
               />
@@ -136,7 +137,7 @@ const Navbar = () => {
           onClick={handleProfileClick}
         >
           <img
-            src="https://randomuser.me/api/portraits/men/32.jpg"
+            src={UserData.picture}
             alt="profile"
             className="w-6 h-6 md:w-7 md:h-7 rounded-full"
           />

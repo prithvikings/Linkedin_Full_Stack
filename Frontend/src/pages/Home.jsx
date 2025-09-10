@@ -9,7 +9,7 @@ const Home = () => {
 
   if (loading) return <div>Loading...</div>; // wait until fetch finishes
   if (!UserData) return <Navigate to="/signin" />; // redirect if not logged in
-
+  console.log(UserData);
 
   const handleeditProfileOpen=()=>{
     setEditProfileOpen(!editProfileOpen);
@@ -24,8 +24,28 @@ const Home = () => {
 
 
         <div className="bg-white p-4 rounded shadow w-78 flex flex-col relative gap-8">
-          <div className="bg-gray-200 h-18 w-full rounded-md  "></div>
-          <div className="w-16 h-16 rounded-full border-2 border-white -mt-8 bg-gray-600 absolute top-22 left-8"></div>
+          <div className="bg-gray-200 h-18 w-full rounded-md  ">
+            {UserData.cover ? (
+              <img
+                src={UserData.cover}
+                alt="Cover"
+                className="w-full h-full object-cover rounded-t-md"
+              />
+            ) : (
+              <div className="w-full h-32 bg-gray-300 rounded-t-md"></div>
+            )}
+          </div>
+          <div className="w-16 h-16 rounded-full border-2 border-white -mt-8 bg-gray-600 absolute top-22 left-8">
+            {UserData.picture?(
+              <img
+                src={UserData.picture}
+                alt="Profile"
+                className="w-full h-full object-cover rounded-full"
+              />
+            ):(
+              <div className="w-full h-full bg-gray-400 rounded-full"></div>
+              )}
+          </div>
           <div className="flex flex-col justify-start mt-4">
             <h2 className="font-medium text-lg">{UserData.firstname} {UserData.lastname}</h2>
             <p className="text-sm text-gray-500 font-medium">{UserData.headline ||"Mern Developer"}</p>
@@ -38,9 +58,19 @@ const Home = () => {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded shadow w-2xl flex justify-evenly gap-2 h-24 items-center">
-          <div className="bg-gray-500 rounded-full w-12 h-12"></div>
-          <div className="w-[70%]">
+        <div className="bg-white p-4 rounded shadow w-2xl flex justify-center gap-4  h-24 items-center">
+          <div className="bg-gray-500 rounded-full w-12 h-12">
+            {UserData.picture?(
+              <img
+              src={UserData.picture}
+              alt="Profile"
+              className="w-full h-full object-cover rounded-full"
+            />
+            ):(
+              <div className="w-full h-full bg-gray-400 rounded-full"></div>
+            )}
+          </div>
+          <div className="w-[80%]">
             <input
               type="text"
               placeholder="Start a post"

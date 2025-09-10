@@ -31,14 +31,9 @@ const userSchema =new mongoose.Schema({
         type:String,
         required:true,
     },
-    picture:{
-        type:String,
-        default:"",
-    },
-    cover:{
-        type:String,
-        default:"",
-    },
+    picture: { type: String, default: "" },
+cover: { type: String, default: "" },
+
     location:{
         type:String,
         default:"India",

@@ -17,39 +17,57 @@ const Signin = () => {
 
   const { serverUrl } = useContext(Auth);
 
-  const handlesubmit = async () => {
+    const handlesubmit = async () => {
     setLoading(true);
+    setError(null);
+
     if (!Email || !password) {
       toast.error("Please fill all the fields");
       setLoading(false);
       return;
     }
 
-    const res = await fetch(serverUrl + "/api/auth/signin", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include", // ✅ important for cookies
-      body: JSON.stringify({
-        email: Email,
-        password,
-      }),
-    });
+    try {
+      // 🔹 Step 1: login request
+      const res = await fetch(serverUrl + "/api/auth/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // ✅ send cookies
+        body: JSON.stringify({ email: Email, password }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (res.ok) {
+      if (!res.ok) {
+        throw new Error(data.message || "Login failed");
+      }
+
+      // 🔹 Step 2: fetch full profile after login
+      const profileRes = await fetch(serverUrl + "/api/user/me", {
+        method: "GET",
+        credentials: "include",
+      });
+
+      const profileData = await profileRes.json();
+      if (!profileRes.ok) {
+        throw new Error(profileData.message || "Could not fetch profile");
+      }
+
+      // ✅ Save user data in context
+      setUserData(profileData.user);
+
       toast.success("Login successful");
       setEmail("");
       setPassword("");
+      navigate("/");
+
+    } catch (err) {
+      setError(err.message);
+      toast.error(err.message);
+    } finally {
       setLoading(false);
-      setUserData(data.user); // ✅ store user data in context
-      navigate("/"); // ✅ now Home will show logged-in state
-    } else {
-      setLoading(false);
-      setError(data.message || "Login failed"); // ✅ save message
-      toast.error(data.message || "Login failed");
     }
   };
 

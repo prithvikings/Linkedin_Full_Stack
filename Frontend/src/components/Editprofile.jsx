@@ -3,9 +3,11 @@ import { RxCross1 } from "react-icons/rx";
 import { useContext } from "react";
 import { UserDataCtx } from "../context/UserContext";
 import { useState } from "react";
+import { Auth } from "../context/AuthContext";
 const Editprofile = () => {
   const { UserData, editProfileOpen, setEditProfileOpen } =
     useContext(UserDataCtx);
+  const { serverUrl } = useContext(Auth);
 
   const handleeditProfileOpen = () => {
     setEditProfileOpen(!editProfileOpen);
@@ -17,13 +19,19 @@ const Editprofile = () => {
   let [location, setLocation] = useState(UserData.location || "");
   let [headline, setHeadline] = useState(UserData.headline || "");
   let [bio, setBio] = useState(UserData.bio || "");
-  const profileImage=useRef();
-  const coverImage=useRef();
+  const profileImage = useRef();
+  const coverImage = useRef();
 
-  let [frontendprofilePic, frontendsetProfilePic] = useState(UserData.profilePic || null);
+  let [frontendprofilePic, frontendsetProfilePic] = useState(
+    UserData.profilePic || null
+  );
   let [backendprofilePic, backendsetProfilePic] = useState(null);
-  let [frontendcoverPic, frontendsetCoverPic] = useState(UserData.coverPic || null);
+  let [frontendcoverPic, frontendsetCoverPic] = useState(
+    UserData.coverPic || null
+  );
   let [backendcoverPic, backendsetCoverPic] = useState(null);
+
+  const [loading, setLoading] = useState(false);
 
   // Skills
   let [newskills, setnewSkills] = useState([]);
@@ -125,10 +133,58 @@ const Editprofile = () => {
     }
   };
 
+  const handlesaveProfile = async () => {
+    try {
+      setLoading(true); // disable button immediately
+
+      let form = new FormData();
+      form.append("firstname", firstname);
+      form.append("lastname", lastname);
+      form.append("email", email);
+      form.append("location", location);
+      form.append("headline", headline);
+      form.append("bio", bio);
+      form.append("skills", skills);
+      form.append("education", JSON.stringify(education));
+      form.append("experiences", JSON.stringify(experiences));
+      if (backendprofilePic) form.append("profilePic", backendprofilePic);
+      if (backendcoverPic) form.append("coverPic", backendcoverPic);
+
+      let result = await fetch(serverUrl + "/api/user/updateprofile", {
+        method: "PUT",
+        body: form,
+        credentials: "include",
+      });
+
+      let res = await result.json();
+
+      if (res.success) {
+        setEditProfileOpen(false); // close modal
+      } else {
+        alert(res.message || "Something went wrong");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to save profile. Please try again.");
+    } finally {
+      setLoading(false); // always re-enable button
+    }
+  };
+
   return (
     <div className="fixed w-full h-[100vh] top-0 z-[100] flex justify-center items-center">
-      <input type="file" accept="image/*" ref={profileImage} onChange={handleProfileImageChange}/>
-      <input type="file" accept="image/*" ref={coverImage} onChange={handleCoverImageChange}/>
+      <input
+        type="file"
+        accept="image/*"
+        ref={profileImage}
+        onChange={handleProfileImageChange}
+      />
+      <input
+        type="file"
+        accept="image/*"
+        ref={coverImage}
+        onChange={handleCoverImageChange}
+      />
       <div className="w-full h-full bg-black opacity-[0.5] absolute"></div>
       <div className="w-[90%] max-w-[500px] max-h-[90vh] bg-white absolute z-[200] shadow-lg rounded-lg p-4 overflow-y-auto">
         <div>
@@ -137,9 +193,10 @@ const Editprofile = () => {
             onClick={handleeditProfileOpen}
           />
         </div>
-        <div 
-        onClick={()=>coverImage.current.click()}
-        className="bg-gray-400 mt-10 w-full h-32 rounded-md cursor-pointer">
+        <div
+          onClick={() => coverImage.current.click()}
+          className="bg-gray-400 mt-10 w-full h-32 rounded-md cursor-pointer"
+        >
           {frontendcoverPic && (
             <img
               src={frontendcoverPic}
@@ -148,9 +205,10 @@ const Editprofile = () => {
             />
           )}
         </div>
-        <div 
-        onClick={()=>profileImage.current.click()}
-        className="bg-gray-800 -mt-8 ml-4 w-20 h-20 rounded-full cursor-pointer">
+        <div
+          onClick={() => profileImage.current.click()}
+          className="bg-gray-800 -mt-8 ml-4 w-20 h-20 rounded-full cursor-pointer"
+        >
           {frontendprofilePic && (
             <img
               src={frontendprofilePic}
@@ -418,8 +476,16 @@ const Editprofile = () => {
                 value={bio}
               ></textarea>
             </div>
-            <button className="bg-blue-600 cursor-pointer text-white py-2 rounded-md mt-4 hover:bg-blue-700 transition duration-300">
-              Save
+            <button
+              disabled={loading}
+              onClick={handlesaveProfile}
+              className={`${
+                loading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700"
+              } text-white py-2 rounded-md mt-4 transition duration-300`}
+            >
+              {loading ? "Saving..." : "Save Profile"}
             </button>
           </div>
         </form>

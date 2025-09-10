@@ -22,11 +22,10 @@ export const getCurrentUser=async(req,res)=>{
     }
 }
 
-
 export const updateUserProfile = async (req, res) => {
   try {
-    const userId = req.userId; // from auth middleware
-    const {
+    const userId = req.userId;
+    let {
       firstname,
       lastname,
       headline,
@@ -39,17 +38,38 @@ export const updateUserProfile = async (req, res) => {
       experiences
     } = req.body;
 
+    // Parse JSON fields
+    if (education) {
+      try {
+        education = JSON.parse(education);
+      } catch {
+        education = [];
+      }
+    }
+    if (experiences) {
+      try {
+        experiences = JSON.parse(experiences);
+      } catch {
+        experiences = [];
+      }
+    }
+
+    // Handle skills (comma separated string -> array)
+    if (skills && typeof skills === "string") {
+      skills = skills.split(",").map((s) => s.trim());
+    }
+
     const files = req.files || {};
     let profilePicture, coverPicture;
 
-    if (files.profilePicture) {
-      profilePicture = await uploadoncloudinary(files.profilePicture[0].path);
-    }
-    if (files.coverPicture) {
-      coverPicture = await uploadoncloudinary(files.coverPicture[0].path);
-    }
+    if (files.profilePic) {
+  profilePicture = await uploadoncloudinary(files.profilePic[0].path);
+}
+if (files.coverPic) {
+  coverPicture = await uploadoncloudinary(files.coverPic[0].path);
+}
 
-    // Build update object dynamically
+
     const updateFields = {
       firstname,
       lastname,
@@ -63,28 +83,26 @@ export const updateUserProfile = async (req, res) => {
       experiences,
     };
 
-    if (profilePicture) updateFields.picture = profilePicture.url;
-    if (coverPicture) updateFields.cover = coverPicture.url;
+   if (profilePicture) updateFields.picture = profilePicture; // ✅ string now
+if (coverPicture) updateFields.cover = coverPicture; 
+
 
     let user = await User.findByIdAndUpdate(userId, updateFields, {
       new: true,
-      runValidators: true, // <-- important for Mongoose validation
+      runValidators: true,
     }).select("-password");
 
     if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
+      return res.status(404).json({ success: false, message: "User not found" });
     }
 
     return res.status(200).json({
       success: true,
       message: "Profile updated successfully",
-      data: { user },
+      data: user,
     });
   } catch (err) {
-    console.error("Update profile error:", err.message);
+    console.error("Update profile error:", err);
     return res.status(500).json({
       success: false,
       message: "Server error, please try again later",
