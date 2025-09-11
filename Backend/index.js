@@ -20,11 +20,13 @@ app.use(cors({
 import authrouter from './routes/auth.routes.js';
 import userouter from './routes/user.router.js';
 import postrouter from './routes/post.routes.js';
+import connectionrouter from './routes//connection.routes.js';
 
 // Use routes
 app.use('/api/auth', authrouter);
 app.use('/api/user', userouter);
 app.use('/api/posts', postrouter);
+app.use('/api/connections', connectionrouter);
 
 // Connect to database and start server
 connectDB().then(() => {
