@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { Auth } from "../context/AuthContext";
 import { UserDataCtx } from "../context/UserContext";
+import { socket } from "../utils/socket.js";
 
 const CommentsModal = ({ postId, comments, setComments, onClose }) => {
   const { serverUrl } = useContext(Auth);
@@ -23,6 +24,25 @@ const CommentsModal = ({ postId, comments, setComments, onClose }) => {
     };
     fetchComments();
   }, [postId]);
+
+
+  useEffect(() => {
+  socket.on("commentAdded", (data) => {
+    if (data.postId === postId) setComments(data.comments);
+  });
+  socket.on("commentEdited", (data) => {
+    if (data.postId === postId) setComments(data.comments);
+  });
+  socket.on("commentDeleted", (data) => {
+    if (data.postId === postId) setComments(data.comments);
+  });
+
+  return () => {
+    socket.off("commentAdded");
+    socket.off("commentEdited");
+    socket.off("commentDeleted");
+  };
+}, [postId]);
 
   // add comment
   const handleAdd = async () => {
@@ -53,19 +73,25 @@ const handleEdit = async (commentId) => {
 };
 
 // delete comment
-  // delete comment
-  const handleDelete = async (commentId) => {
-    try {
-      const res = await fetch(`${serverUrl}/api/posts/comment/${commentId}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
-      const data = await res.json();
-      setComments(Array.isArray(data) ? data : []);
-    } catch (err) {
-      console.log("Error deleting comment:", err);
+const handleDelete = async (commentId) => {
+  try {
+    const res = await fetch(`${serverUrl}/api/posts/comment/${commentId}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      // no need to manually setComments here, socket will handle update
+      console.log("Deleted successfully", data);
+    } else {
+      console.error("Delete failed:", data.message || data.error);
     }
-  };
+  } catch (err) {
+    console.log("Error deleting comment:", err);
+  }
+};
 
 
 
