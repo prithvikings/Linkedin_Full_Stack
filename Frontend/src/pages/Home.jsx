@@ -44,6 +44,8 @@ const Home = () => {
     }
   };
 
+  
+
   useEffect(() => {
     getPost();
   }, []);
@@ -129,7 +131,7 @@ const Home = () => {
 
           {/* Posts Feed */}
           {posts.length > 0 ? (
-            posts.map((post) => <PostCard key={post._id} post={post} />)
+            posts.map((post) => <PostCard key={post._id} post={post} setPosts={setPosts} />)
           ) : (
             <p className="text-center text-gray-500">No posts yet</p>
           )}

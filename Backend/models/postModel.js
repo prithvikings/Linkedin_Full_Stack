@@ -22,14 +22,14 @@ const postSchema = new mongoose.Schema(
       },
     ],
     comments: [
-      {
-        content: { type: String },
-        user: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "User",
-        },
-      },
-    ],
+  {
+    text: { type: String, required: true },  // ✅ fix key name
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  },
+],
   },
   { timestamps: true }
 );
