@@ -2,6 +2,7 @@ import express from "express";
 import {
   createPost,
   getFeedPosts,
+  getMyPosts,
   like,
   getLikes,
   addComment,
@@ -18,6 +19,7 @@ const postrouter=express.Router();
 
 postrouter.post("/create",isAuth,upload.single("image"),createPost);
 postrouter.get("/getfeed",isAuth,getFeedPosts);
+postrouter.get("/myposts", isAuth, getMyPosts);
 postrouter.post("/like/:id", isAuth, like);
 postrouter.get("/likes/:id", isAuth, getLikes);
 postrouter.post("/comment/:id", isAuth, addComment); // add

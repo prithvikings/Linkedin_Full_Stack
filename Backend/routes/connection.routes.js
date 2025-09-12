@@ -5,6 +5,8 @@ import {
   rejectConnectionRequest,
   removeConnection,
   getConnectionStatus,   // ✅ this exists
+  getPendingRequests,   // 🔹 new
+  getAllConnections,  // 🔹 new
 } from "../controllers/connection.controllers.js";
 import { isAuth } from "../middlewares/isAuth.js";
 
@@ -20,5 +22,8 @@ connectionrouter.get("/status/:userId", isAuth, getConnectionStatus);
 
 // Remove
 connectionrouter.delete("/remove/:userId", isAuth, removeConnection);
+
+connectionrouter.get("/requests", isAuth, getPendingRequests);
+connectionrouter.get("/all", isAuth, getAllConnections);
 
 export default connectionrouter;

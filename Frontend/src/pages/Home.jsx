@@ -16,6 +16,7 @@ const Home = () => {
     setEditProfileOpen,
     setcreatePostmodal,
     createPostmodal,
+    imageUrl
   } = useContext(UserDataCtx);
 
   const [posts, setPosts] = useState([]); // store feed posts
@@ -82,7 +83,11 @@ const Home = () => {
                 className="w-full h-full object-cover rounded-full"
               />
             ) : (
-              <div className="w-full h-full bg-gray-400 rounded-full"></div>
+              <img
+                src={ imageUrl}
+                alt="Profile"
+                className="w-full h-full object-cover rounded-full"
+              />
             )}
           </div>
 
@@ -113,12 +118,18 @@ const Home = () => {
           <div className="bg-white rounded-lg shadow p-4 flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-gray-400 overflow-hidden">
               {UserData.picture ? (
-                <img
-                  src={UserData.picture}
-                  alt="Profile"
-                  className="w-full h-full object-cover"
-                />
-              ) : null}
+              <img
+                src={UserData.picture}
+                alt="Profile"
+                className="w-full h-full object-cover rounded-full"
+              />
+            ) : (
+              <img
+                src={ imageUrl}
+                alt="Profile"
+                className="w-full h-full object-cover rounded-full"
+              />
+            )}
             </div>
             <input
               onClick={() => setcreatePostmodal(true)}

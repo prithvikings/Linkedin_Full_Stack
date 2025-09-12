@@ -17,7 +17,7 @@ const Navbar = () => {
   const [isProfilePop, setIsProfilePop] = useState(false);
   const navigate = useNavigate();
     const { serverUrl } = useContext(Auth);
-      const {  UserData,setUserData } = useContext(UserDataCtx);
+      const {  UserData,setUserData,imageUrl } = useContext(UserDataCtx);
     
   
 
@@ -70,12 +70,16 @@ const Navbar = () => {
 
       {/* Right section */}
       <div className="flex items-center gap-4 md:gap-8 text-gray-600">
-        <div className="flex flex-col items-center cursor-pointer hover:text-black">
+        <div
+        onClick={() => navigate('/')}
+        className="flex flex-col items-center cursor-pointer hover:text-black">
           <FaHome className="text-lg md:text-xl" />
           <span className="hidden md:block text-xs">Home</span>
         </div>
 
-        <div className="flex flex-col items-center cursor-pointer hover:text-black">
+        <div 
+        onClick={() => navigate('/profile/network')}
+        className="flex flex-col items-center cursor-pointer hover:text-black">
           <FiUsers className="text-lg md:text-xl" />
           <span className="hidden md:block text-xs">My Network</span>
         </div>
@@ -100,7 +104,7 @@ const Navbar = () => {
           <div className="absolute top-16 right-6 w-72 bg-white rounded-lg shadow-lg border border-gray-200 z-50 animate-fadeIn">
             <div className="flex flex-col items-center p-4 border-b border-gray-200">
               <img
-                src={UserData.picture}
+                src={UserData?.picture||imageUrl}
                 alt="profile"
                 className="w-20 h-20 rounded-full mb-3"
               />
@@ -137,7 +141,7 @@ const Navbar = () => {
           onClick={handleProfileClick}
         >
           <img
-            src={UserData.picture}
+            src={UserData?.picture||imageUrl}
             alt="profile"
             className="w-6 h-6 md:w-7 md:h-7 rounded-full"
           />

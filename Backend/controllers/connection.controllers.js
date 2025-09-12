@@ -10,6 +10,14 @@ const emitStatus = (targetUserId, updatedUserId, status) => {
   }
 };
 
+const emitConnectionUpdate = (userId) => {
+  const socketId = userSocketMap.get(userId);
+  if (socketId) {
+    io.to(socketId).emit("connectionUpdate"); // just notify, frontend will refetch
+  }
+};
+
+
 // 🔹 Send connection request
 export const sendConnectionRequest = async (req, res) => {
   try {
@@ -38,6 +46,8 @@ export const sendConnectionRequest = async (req, res) => {
 
     emitStatus(receiverId, senderId, "received"); // receiver sees "received"
     emitStatus(senderId, receiverId, "pending");  // sender sees "pending"
+    emitConnectionUpdate(receiverId);
+emitConnectionUpdate(senderId);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -70,6 +80,8 @@ export const acceptConnectionRequest = async (req, res) => {
 
     emitStatus(senderId, receiverId, "connected");
     emitStatus(receiverId, senderId, "connected");
+    emitConnectionUpdate(senderId);
+emitConnectionUpdate(receiverId);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -93,6 +105,8 @@ export const rejectConnectionRequest = async (req, res) => {
 
     res.status(200).json({ message: "Request rejected." });
     emitStatus(senderId, receiverId, "none");
+    emitConnectionUpdate(senderId);
+emitConnectionUpdate(receiverId);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -122,6 +136,8 @@ export const removeConnection = async (req, res) => {
 
     emitStatus(otherUserId, currentUserId, "none");
     emitStatus(currentUserId, otherUserId, "none");
+    emitConnectionUpdate(otherUserId);
+emitConnectionUpdate(currentUserId);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -159,5 +175,43 @@ export const getConnectionStatus = async (req, res) => {
     return res.json({ status: "none" });
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+};
+
+
+// Get all pending requests for the logged-in user
+export const getPendingRequests = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    const requests = await Connection.find({
+      receiver: userId,
+      status: "pending",
+    }).populate("sender", "firstname lastname email picture");
+
+    res.status(200).json({ requests });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+// Get all connections for the logged-in user
+export const getAllConnections = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    const connections = await Connection.find({
+      $or: [
+        { sender: userId, status: "accepted" },
+        { receiver: userId, status: "accepted" },
+      ],
+    })
+      .populate("sender", "firstname lastname email picture")
+      .populate("receiver", "firstname lastname email picture");
+
+    res.status(200).json({ connections });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

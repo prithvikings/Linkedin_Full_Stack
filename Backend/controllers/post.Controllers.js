@@ -201,3 +201,19 @@ export const deleteComment = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+
+// GET /api/posts/myposts
+export const getMyPosts = async (req, res) => {
+  try {
+    const userId = req.userId; // Make sure you attach user in auth middleware
+    const posts = await Post.find({ author: userId })
+      .populate("author", "firstname lastname picture headline")
+      .sort({ createdAt: -1 });
+
+    res.json(posts);
+  } catch (err) {
+    console.error("Error fetching my posts:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};

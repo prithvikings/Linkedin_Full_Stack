@@ -7,7 +7,8 @@
   import PublicRoute from "./utils/PublicRoute";   // 👈 import it
   import Profile from "./pages/Profile";
   import ErrorPage from "./components/ErrorPage";
-
+  import Network from "./pages/Network";
+import Navbar from "./components/Navbar";
 
 
   // Define routes using createBrowserRouter
@@ -30,7 +31,17 @@
     },
     {
       path:"/profile/:id",
-      element:<ProtectedRoute><Profile /></ProtectedRoute>,
+      element:<ProtectedRoute>
+        <Navbar />
+        <Profile />
+      </ProtectedRoute>,
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/profile/network",
+      element: <ProtectedRoute>
+        <Navbar />
+        <Network /></ProtectedRoute>,
       errorElement: <ErrorPage />,
     },
     {

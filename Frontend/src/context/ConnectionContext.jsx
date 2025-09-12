@@ -25,7 +25,7 @@ const ConnectionProvider = ({ children }) => {
   }, [UserData]);
 
   return (
-    <ConnectionCtx.Provider value={{ statuses, setStatuses }}>
+    <ConnectionCtx.Provider value={{ statuses, setStatuses}}>
       {children}
     </ConnectionCtx.Provider>
   );

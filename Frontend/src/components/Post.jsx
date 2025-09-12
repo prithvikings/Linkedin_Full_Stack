@@ -10,7 +10,7 @@ import ConnectionButton from "./ConnectionButton";
 const Post = ({ post }) => {
   const { serverUrl } = useContext(Auth);
 
-  const { UserData } = useContext(UserDataCtx);
+  const { UserData,imageUrl } = useContext(UserDataCtx);
 
   const [likes, setLikes] = useState(post.likes || []);
   const [comments, setComments] = useState(post.comments || []);
@@ -57,7 +57,11 @@ const Post = ({ post }) => {
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full bg-gray-400"></div>
+            <img
+              src={imageUrl}
+              alt="Author"
+              className="w-full h-full object-cover"
+            />
           )}
         </div>
         <div className="flex justify-between w-full items-center">
