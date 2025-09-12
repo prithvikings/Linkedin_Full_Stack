@@ -60,13 +60,15 @@ const Post = ({ post }) => {
             <div className="w-full h-full bg-gray-400"></div>
           )}
         </div>
-        <div>
-          <h4 className="font-semibold text-sm">
+        <div className="flex justify-between w-full items-center">
+          <div>
+            <h4 className="font-semibold text-sm">
             {post.author?.firstname} {post.author?.lastname}
           </h4>
           <p className="text-xs text-gray-500">
             {post.author?.headline || "User"}
           </p>
+          </div>
           
     {/* ✅ Connection button */}
     <ConnectionButton userId={post.author?._id} />
@@ -92,7 +94,7 @@ const Post = ({ post }) => {
         {/* Like */}
         <button
           onClick={handlePostLike}
-          className={`flex items-center gap-2 transition ${
+          className={`flex items-center gap-2 transition hover:cursor-pointer ${
             hasLiked ? "text-blue-600 font-semibold" : "hover:text-blue-500"
           }`}
         >
@@ -116,7 +118,7 @@ const Post = ({ post }) => {
         {/* Comments */}
         <button
           onClick={() => setShowCommentsModal(true)}
-          className="flex items-center gap-2 hover:text-blue-500"
+          className="flex items-center gap-2 hover:text-blue-500 hover:cursor-pointer"
         >
           <MessageSquare size={18} />
           Comment {comments.length > 0 && <span>({comments.length})</span>}
