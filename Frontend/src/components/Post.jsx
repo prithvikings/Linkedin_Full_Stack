@@ -5,6 +5,7 @@ import { ThumbsUp, MessageSquare } from "lucide-react";
 import LikesModal from "./LikesModal";
 import CommentsModal from "./CommentModal";
 import { socket } from "../utils/socket.js";
+import ConnectionButton from "./ConnectionButton";
 
 const Post = ({ post }) => {
   const { serverUrl } = useContext(Auth);
@@ -66,6 +67,9 @@ const Post = ({ post }) => {
           <p className="text-xs text-gray-500">
             {post.author?.headline || "User"}
           </p>
+          
+    {/* ✅ Connection button */}
+    <ConnectionButton userId={post.author?._id} />
         </div>
       </div>
 

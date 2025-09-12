@@ -17,8 +17,14 @@ export const io=new Server(server,{
   } 
 })
 
+export const userSocketMap= new Map();
+  
 io.on("connection",(socket)=>{
   console.log("User connected: ",socket.id);
+  socket.on("register",({userId})=>{
+    userSocketMap.set(userId,socket.id);
+    console.log("User registered with ID:",userId,"Socket ID:",socket.id);
+  });
   socket.on("disconnect",()=>{
     console.log("User disconnected",socket.id);
   }
