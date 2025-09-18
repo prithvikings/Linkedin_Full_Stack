@@ -208,7 +208,7 @@ export const getMyPosts = async (req, res) => {
   try {
     const userId = req.userId; // Make sure you attach user in auth middleware
     const posts = await Post.find({ author: userId })
-      .populate("author", "firstname lastname picture headline")
+      .populate("author", "firstname lastname picture headline,username")
       .sort({ createdAt: -1 });
 
     res.json(posts);

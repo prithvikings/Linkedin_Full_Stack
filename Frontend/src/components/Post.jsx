@@ -10,7 +10,7 @@ import ConnectionButton from "./ConnectionButton";
 const Post = ({ post }) => {
   const { serverUrl } = useContext(Auth);
 
-  const { UserData,imageUrl } = useContext(UserDataCtx);
+  const { UserData,imageUrl,handleGetProfile } = useContext(UserDataCtx);
 
   const [likes, setLikes] = useState(post.likes || []);
   const [comments, setComments] = useState(post.comments || []);
@@ -50,6 +50,7 @@ const Post = ({ post }) => {
       {/* Author */}
       <div className="flex items-center gap-3 mb-3">
         <div className="w-10 h-10 rounded-full bg-gray-300 overflow-hidden">
+          onClick={()=>handleGetProfile(post.author?.username)}
           {post.author?.picture ? (
             <img
               src={post.author.picture}

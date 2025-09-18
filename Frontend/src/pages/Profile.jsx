@@ -70,7 +70,9 @@ const Profile = () => {
             <h1 className="text-2xl font-bold">
               {UserData.firstname} {UserData.lastname}
             </h1>
-            <p className="text-gray-600">{UserData.headline || "No headline"}</p>
+            <p className="text-gray-600">
+              {UserData.headline || "No headline"}
+            </p>
             <p className="text-sm text-gray-500">{UserData.email}</p>
             <p className="mt-2 text-gray-700">
               {UserData.bio || "No bio added yet."}
@@ -91,13 +93,96 @@ const Profile = () => {
           </div>
         </div>
 
+        {/*User skills*/}
+        <div className="bg-white rounded-xl shadow-lg p-6 relative">
+          <h2 className="text-lg font-semibold mb-4">My Skills</h2>
+          {UserData.skills && UserData.skills.length > 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {UserData.skills.map((skill, index) => (
+                <span
+                  key={index}
+                  className="bg-gray-200 text-gray-800 text-sm font-semibold py-1 px-2 rounded"
+                >
+                  {skill}
+                </span>
+              ))}
+            </div>
+          ) : (
+            <p className="text-center text-gray-500">No skills added yet.</p>
+          )}
+          <button
+            onClick={() => setEditProfileOpen(true)}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 cursor-pointer hover:shadow-lg transition-shadow absolute top-6 right-6"
+          >
+            Edit Skill
+          </button>
+        </div>
+
+
+        {/*User Education*/}
+        <div className="bg-white rounded-xl shadow-lg p-6 relative">
+          <h2 className="text-lg font-semibold mb-4">My education</h2>
+          {UserData.education && UserData.education.length > 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {UserData.education.map((edu, index) => (
+                <span
+                  key={index}
+                  className="bg-gray-200 text-gray-800 text-sm font-semibold py-1 px-2 rounded"
+                >
+                  {edu.degree} in {edu.fieldofstudy} from {edu.college} (
+                  {edu.startyear} - {edu.endyear})
+
+                </span>
+              ))}
+            </div>
+          ) : (
+            <p className="text-center text-gray-500">No education added yet.</p>
+          )}
+          <button
+            onClick={() => setEditProfileOpen(true)}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 cursor-pointer hover:shadow-lg transition-shadow absolute top-6 right-6"
+          >
+            Edit Education
+          </button>
+        </div>
+
+
+        {/*User Experience*/}
+        <div className="bg-white rounded-xl shadow-lg p-6 relative">
+          <h2 className="text-lg font-semibold mb-4">My experiencesn</h2>
+          {UserData.experiences && UserData.experiences.length > 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {UserData.experiences.map((exp, index) => (
+                <span
+                  key={index}
+                  className="bg-gray-200 text-gray-800 text-sm font-semibold py-1 px-2 rounded"
+                >
+                  {exp.title} at {exp.company}
+
+                </span>
+              ))}
+            </div>
+          ) : (
+            <p className="text-center text-gray-500">No experiences added yet.</p>
+          )}
+          <button
+            onClick={() => setEditProfileOpen(true)}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 cursor-pointer hover:shadow-lg transition-shadow absolute top-6 right-6"
+          >
+            Edit experiences
+          </button>
+        </div>
+
+
         {/* User Posts */}
         <div className="bg-gray-200 rounded-xl shadow-lg p-6">
           <h2 className="text-lg font-semibold mb-4">My Posts</h2>
           {loadingPosts ? (
             <p className="text-center text-gray-500">Loading posts...</p>
           ) : posts.length === 0 ? (
-            <p className="text-center text-gray-500">You haven’t posted anything yet.</p>
+            <p className="text-center text-gray-500">
+              You haven’t posted anything yet.
+            </p>
           ) : (
             <div className="flex flex-col gap-4">
               {posts.map((post) => (

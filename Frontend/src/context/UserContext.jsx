@@ -11,7 +11,7 @@ const UserContext = ({ children }) => {
   const [createPostmodal, setcreatePostmodal] = useState(false);
   const { serverUrl } = useContext(Auth);
     const imageUrl = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
-  
+  let[userNameProfile,setUserNameProfile]=useState([])
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -44,6 +44,29 @@ const UserContext = ({ children }) => {
     fetchUserData();
   }, [serverUrl]);
 
+  const handleGetProfile=async(username)=>{
+    try{
+      const res = await fetch(serverUrl + `/api/user/${username}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (res.ok) {
+        console.log("Profile data:", data.user);
+        setUserNameProfile(data.user);
+        return data.user;
+      } else {
+        console.error("Error fetching profile:", data.message);
+        return null;
+      }
+    }
+    catch(error){
+      console.error("Error fetching profile:", error);
+      return null;
+    }
+  }
+
   return (
     <UserDataCtx.Provider
       value={{
@@ -54,7 +77,10 @@ const UserContext = ({ children }) => {
         setEditProfileOpen,
         createPostmodal,
         setcreatePostmodal,
-        imageUrl
+        imageUrl,
+        handleGetProfile,
+        userNameProfile,
+        setUserNameProfile
       }}
     >
       {children}
