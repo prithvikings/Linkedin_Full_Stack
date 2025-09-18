@@ -2,7 +2,7 @@ import React, { createContext } from "react";
 export const Auth = createContext();
 
 const AuthContext = ({ children }) => {
-  const serverUrl = "http://localhost:3000";
+  const serverUrl = "https://linkedin-full-stack.onrender.com";
 
  
 
