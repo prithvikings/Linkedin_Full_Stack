@@ -116,6 +116,7 @@ const Navbar = () => {
               className="bg-transparent outline-none w-full text-sm"
               onChange={(e) => setSearchInput(e.target.value)}
               value={searchInput}
+              autoComplete="off"
             />
           </div>
 

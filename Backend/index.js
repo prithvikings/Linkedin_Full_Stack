@@ -55,12 +55,14 @@ import authrouter from './routes/auth.routes.js';
 import userouter from './routes/user.router.js';
 import postrouter from './routes/post.routes.js';
 import connectionrouter from './routes/connection.routes.js';
+import notificationRouter from './routes/notification.routes.js';
 
 // Use routes
 app.use('/api/auth', authrouter);
 app.use('/api/user', userouter);
 app.use('/api/posts', postrouter);
 app.use('/api/connections', connectionrouter);
+app.use('/api/notifications', notificationRouter);
 
 // Connect to database and start server
 connectDB()

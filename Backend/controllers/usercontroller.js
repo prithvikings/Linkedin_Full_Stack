@@ -158,3 +158,21 @@ export const search=async(req,res)=>{
     return res.status(500).json({ success: false, message: "Server error, please try again later" });
   }
 }
+
+
+export const getSuggestedUsers=async(req,res)=>{
+  try{
+    let currentUser=await User.findById(req.userId).select('connections');
+    let suggest=await User.find({_id: { $ne: req.userId, $nin: currentUser.connections }})
+    .select('-password')
+    .limit(5);
+    return res.status(200).json({
+      success:true,
+      message:"Suggested users fetched successfully",
+      suggest
+    });
+  }catch(err){
+    console.error(err.message);
+    return res.status(500).json({ success: false, message: "Server error, please try again later" });
+  }
+}
