@@ -50,7 +50,6 @@ const Post = ({ post }) => {
       {/* Author */}
       <div className="flex items-center gap-3 mb-3">
         <div className="w-10 h-10 rounded-full bg-gray-300 overflow-hidden">
-          onClick={()=>handleGetProfile(post.author?.username)}
           {post.author?.picture ? (
             <img
               src={post.author.picture}

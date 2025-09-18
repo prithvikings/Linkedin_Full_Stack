@@ -128,3 +128,33 @@ export const getProfileByUserName=async(req,res)=>{
         return res.status(500).json({ success: false, message: "Server error, please try again later" });
     }
 }
+
+
+export const search=async(req,res)=>{
+  try{
+    const {query}=req.query;
+    if(!query || query.trim()===""){
+      return res.status(400).json({ success: false, message: "Query parameter is required" });
+    }
+    const regex=new RegExp(query,"i");
+    const users=await User.find({
+      $or:[
+        {firstname:regex},
+        {lastname:regex},
+        {username:regex},
+        {headline:regex},
+        {location:regex},
+        {skills:regex}
+      ]
+    }).select("-password").limit(10);
+    return res.status(200).json({
+      success:true,
+      message:"Search results fetched successfully",
+      users
+    });
+
+  }catch(err){
+    console.error(err.message);
+    return res.status(500).json({ success: false, message: "Server error, please try again later" });
+  }
+}
