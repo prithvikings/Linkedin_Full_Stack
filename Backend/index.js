@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 3000;
 let server=http.createServer(app);
 export const io=new Server(server,{
   cors:{
-    origin:process.env.CLIENT_URL,
+    origin:"https://linkedin-full-stack-frontend.onrender.com",
     credentials:true
   } 
 })
@@ -45,7 +45,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: process.env.CLIENT_URL, // e.g. "http://localhost:5173"
+    origin:"https://linkedin-full-stack-frontend.onrender.com", // e.g. "http://localhost:5173"
     credentials: true,
   })
 );
