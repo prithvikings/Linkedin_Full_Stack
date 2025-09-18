@@ -178,7 +178,9 @@ const Navbar = () => {
           <span className="hidden md:block text-xs">Messaging</span>
         </div>
 
-        <div className="flex flex-col items-center cursor-pointer hover:text-black">
+        <div
+        onClick={() => navigate("/profile/notifications")}
+        className="flex flex-col items-center cursor-pointer hover:text-black">
           <FaBell className="text-lg md:text-xl" />
           <span className="hidden md:block text-xs">Notifications</span>
         </div>

@@ -9,6 +9,7 @@
   import ErrorPage from "./components/ErrorPage";
   import Network from "./pages/Network";
 import Navbar from "./components/Navbar";
+import NotificationsPage from "./pages/NotificationsPage";
 
 
   // Define routes using createBrowserRouter
@@ -42,6 +43,14 @@ import Navbar from "./components/Navbar";
       element: <ProtectedRoute>
         <Navbar />
         <Network /></ProtectedRoute>,
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/profile/notifications",
+      element: <ProtectedRoute>
+        <Navbar />
+        <NotificationsPage />
+        </ProtectedRoute>,
       errorElement: <ErrorPage />,
     },
     {

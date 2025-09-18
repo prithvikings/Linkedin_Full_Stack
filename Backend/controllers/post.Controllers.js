@@ -1,43 +1,41 @@
 import Post from "../models/postModel.js";
 import uploadoncloudinary from "../config/cloudinary.js";
 import { io } from "../index.js";
-
+import Notification from "../models/notificationModel.js";
 
 export const createPost = async (req, res) => {
-  try{
-
-    let {description} = req.body;
+  try {
+    let { description } = req.body;
     let newPost;
-    if(req.file){
+    if (req.file) {
       const image = await uploadoncloudinary(req.file.path);
-       newPost = new Post({
-        author: req.userId,
-        description,
-        image
-      });
-      await newPost.save();
-      res.status(201).json(newPost);
-    }
-    else{
       newPost = new Post({
         author: req.userId,
-        description
+        description,
+        image,
+      });
+      await newPost.save();
+      res.status(201).json(newPost);
+    } else {
+      newPost = new Post({
+        author: req.userId,
+        description,
       });
       await newPost.save();
       res.status(201).json(newPost);
     }
-  }catch(err){
-    res.status(500).json({error: err.message});
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-}
+};
 export const getFeedPosts = async (req, res) => {
-  try{
-    const posts = await Post.find().populate("author").sort({createdAt: -1});
+  try {
+    const posts = await Post.find().populate("author").sort({ createdAt: -1 });
     res.status(200).json(posts);
-  }catch(err){
-    res.status(500).json({error: err.message});
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-}
+};
 
 // ✅ Toggle like/unlike
 export const like = async (req, res) => {
@@ -51,14 +49,22 @@ export const like = async (req, res) => {
     // check if already liked
     if (post.likes.includes(userId)) {
       // unlike → remove userId
-      post.likes = post.likes.filter((id) => id.toString() !== userId.toString());
+      post.likes = post.likes.filter(
+        (id) => id.toString() !== userId.toString()
+      );
     } else {
       // like → add userId
       post.likes.push(userId);
+      let notification = await Notification.create({
+        receiver: post.author,
+        relatedUser: userId,
+        relatedPost: postId,
+        type: "like",
+      });
     }
     await post.save();
     io.emit("likeUpdate", { postId, userId, likes: post.likes });
-    
+
     // populate likes count and author for frontend
     const updatedPost = await Post.findById(postId)
       .populate("author", "firstname lastname picture headline")
@@ -69,7 +75,6 @@ export const like = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
 
 export const getLikes = async (req, res) => {
   try {
@@ -84,7 +89,6 @@ export const getLikes = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
 
 // Add comment
 export const addComment = async (req, res) => {
@@ -104,6 +108,13 @@ export const addComment = async (req, res) => {
       "comments.user",
       "firstname lastname picture"
     );
+
+    let notification = await Notification.create({
+      receiver: post.author,
+      relatedUser: req.userId,
+      relatedPost: post._id,
+      type: "comment",
+    });
 
     // ✅ emit socket event
     io.emit("commentAdded", {
@@ -201,7 +212,6 @@ export const deleteComment = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
 
 // GET /api/posts/myposts
 export const getMyPosts = async (req, res) => {

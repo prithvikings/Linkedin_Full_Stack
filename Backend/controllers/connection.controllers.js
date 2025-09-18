@@ -1,6 +1,7 @@
 import Connection from "../models/connectionModel.js";
 import User from "../models/userModel.js";
 import { io, userSocketMap } from "../index.js";
+import Notification from "../models/notificationModel.js";
 
 // 🔹 Helper: emit status update safely
 const emitStatus = (targetUserId, updatedUserId, status) => {
@@ -39,6 +40,11 @@ export const sendConnectionRequest = async (req, res) => {
       return res.status(400).json({ message: `Connection already ${existing.status}.` });
     }
 
+    let notification = await Notification.create({
+      receiver: receiverId,
+      relatedUser: senderId,
+      type: "connectionrequest",
+    });
     const newConnection = await Connection.create({ sender: senderId, receiver: receiverId });
 
     const populated = await newConnection.populate("sender receiver", "firstname lastname email picture");
@@ -70,12 +76,18 @@ export const acceptConnectionRequest = async (req, res) => {
     }
 
     connection.status = "accepted";
+    let notification = await Notification.create({
+      receiver: connection.sender,
+      relatedUser: receiverId,
+      type: "connectionAccepted",
+    });
     await connection.save();
 
     await User.findByIdAndUpdate(senderId, { $addToSet: { connections: receiverId } });
     await User.findByIdAndUpdate(receiverId, { $addToSet: { connections: senderId } });
 
     const populated = await connection.populate("sender receiver", "firstname lastname email picture");
+    
     res.status(200).json(populated);
 
     emitStatus(senderId, receiverId, "connected");
