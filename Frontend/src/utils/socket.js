@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
-const serverUrl = import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
+const serverUrl = "https://linkedin-full-stack.onrender.com";
 
 export const socket = io(serverUrl, { withCredentials: true });
 
