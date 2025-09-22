@@ -20,10 +20,12 @@ const CLIENT_URL = process.env.CLIENT_URL || "https://linkedin-full-stack-fronte
 // CORS for Socket.io
 export const io = new Server(server, {
   cors: {
-    origin: CLIENT_URL,
-    credentials: true
-  }
+    origin: [CLIENT_URL],  
+    credentials: true,
+    methods: ["GET", "POST"],
+  },
 });
+
 
 export const userSocketMap = new Map();
 
